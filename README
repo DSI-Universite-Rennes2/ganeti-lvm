@@ -1,0 +1,55 @@
+GANETI EXTSTORAGE PROVIDER FOR SHARED LVM VOLUMES
+-------------------------------------------------
+
+This repository is intended to keep this extstorage provider 'online'. Original sources code can be find here : http://www.goodbytez.de/ganeti/
+
+
+This storage provider was tested in production on Debian Wheezy 7.8 + Xen 4.4.1 + Ganeti 2.11.6.
+This storage provider was tested in production on Debian Jessie 8.0 + Xen 4.4.1 + Ganeti 2.11.6.
+This storage provider was tested in production on Debian Jessie 8.6 + Xen 4.6.4 + Ganeti 2.15.2.
+This storage provider was tested in production on Debian Stretch 9.1 + Xen 4.8.1 + Ganeti 2.15.2.
+
+This storage provider was tested with clvm (Installation not covered here) and pure lvm on external iSCSI storage and Direct Attached Storage (DAS).
+
+
+INSTALLATION
+------------
+
+Login to master node over ssh.
+Enable "ext" disk template (not covered here).
+
+    cd /usr/local/src/
+    wget http://www.goodbytez.de/ganeti/lvm.tar.gz
+    cd /usr/share/ganeti/extstorage/
+    tar xvfz /usr/local/src/lvm.tar.gz
+
+Do this on every other node in the cluster too.
+When finished check the installation from master...
+
+    gnt-storage diagnose
+
+When everything is fine this should show something like...
+
+    Provider: lvm
+    ---
+      Node: 1b5aa798-1c07-4fda-ba11-5f6ad66b857b, status: valid (path: /usr/share/ganeti/extstorage/lvm) [parameters: vgname]
+      Node: 4cc09080-46d1-4756-b9e7-d4ce90887553, status: valid (path: /usr/share/ganeti/extstorage/lvm) [parameters: vgname]
+      Node: 27a0c840-d08e-4ea4-8748-08f9a274c479, status: valid (path: /usr/share/ganeti/extstorage/lvm) [parameters: vgname]
+      Node: d700d1da-2b1a-4038-ad55-643795680906, status: valid (path: /usr/share/ganeti/extstorage/lvm) [parameters: vgname]
+      --
+      For nodegroup: default --> valid
+
+
+CREATE AN INSTANCE
+------------------
+
+Make sure all nodes in the cluster have access to the same volume group (check with vgs).
+Now create your first shared lvm instance...
+
+    gnt-instance add -t ext --disk 0:size=20G,provider=lvm,vgname=VOLUMEGROUPNAME ... INSTANCE
+
+
+KNOWN BUGS
+----------
+
+    None.
